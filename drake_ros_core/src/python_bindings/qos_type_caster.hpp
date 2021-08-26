@@ -141,53 +141,18 @@ struct type_caster<drake_ros_core::QoS> {
         }
         value.keep_last(depth);
         break;
-      case RMW_QOS_POLICY_HISTORY_KEEP_ALL:
-      case RMW_QOS_POLICY_HISTORY_SYSTEM_DEFAULT:
-      case RMW_QOS_POLICY_HISTORY_UNKNOWN:
+      default:
         value.history(static_cast<rmw_qos_history_policy_t>(history));
         break;
-      default:
-        if (!PyErr_Occurred()) {
-          PyErr_Format(PyExc_ValueError, "Unsupported history policy %zu",
-                       history);
-        }
-        return false;
     }
 
     // Reliability
     reliability = PyNumber_AsSsize_t(py_reliability, NULL);
-    switch (reliability) {
-      case RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT:
-      case RMW_QOS_POLICY_RELIABILITY_RELIABLE:
-      case RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT:
-      case RMW_QOS_POLICY_RELIABILITY_UNKNOWN:
-        value.reliability(
-            static_cast<rmw_qos_reliability_policy_t>(reliability));
-        break;
-      default:
-        if (!PyErr_Occurred()) {
-          PyErr_Format(PyExc_ValueError, "Unsupported reliability policy %zu",
-                       reliability);
-        }
-        return false;
-    }
+    value.reliability(static_cast<rmw_qos_reliability_policy_t>(reliability));
 
     // Durability
     durability = PyNumber_AsSsize_t(py_durability, NULL);
-    switch (durability) {
-      case RMW_QOS_POLICY_DURABILITY_SYSTEM_DEFAULT:
-      case RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL:
-      case RMW_QOS_POLICY_DURABILITY_VOLATILE:
-      case RMW_QOS_POLICY_DURABILITY_UNKNOWN:
-        value.durability(static_cast<rmw_qos_durability_policy_t>(durability));
-        break;
-      default:
-        if (!PyErr_Occurred()) {
-          PyErr_Format(PyExc_ValueError, "Unsupported durability policy %zu",
-                       durability);
-        }
-        return false;
-    }
+    value.durability(static_cast<rmw_qos_durability_policy_t>(durability));
 
     // lifespan
     py_lifespan_ns = PyObject_GetAttrString(py_lifespan, "nanoseconds");
@@ -213,20 +178,7 @@ struct type_caster<drake_ros_core::QoS> {
 
     // liveliness
     liveliness = PyNumber_AsSsize_t(py_liveliness, NULL);
-    switch (liveliness) {
-      case RMW_QOS_POLICY_LIVELINESS_AUTOMATIC:
-      case RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC:
-      case RMW_QOS_POLICY_LIVELINESS_SYSTEM_DEFAULT:
-      case RMW_QOS_POLICY_LIVELINESS_UNKNOWN:
-        value.liveliness(static_cast<rmw_qos_liveliness_policy_t>(liveliness));
-        break;
-      default:
-        if (!PyErr_Occurred()) {
-          PyErr_Format(PyExc_ValueError, "Unsupported liveliness policy %zu",
-                       liveliness);
-        }
-        return false;
-    }
+    value.liveliness(static_cast<rmw_qos_liveliness_policy_t>(liveliness));
 
     // liveliness_lease_duration
     py_liveliness_lease_duration_ns =
