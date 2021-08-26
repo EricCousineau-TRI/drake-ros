@@ -52,30 +52,30 @@ def make_abstract_value(some_type):
     // Get type support capsule and pointer
     auto typesupport = py::cast<py::capsule>(
         py_get_typesupport(message_type, "_TYPE_SUPPORT"));
-    // TODO(sloretz) use get_pointer() in py 2.6+
+    // TODO(sloretz) use get_pointer() in pybind11 2.6+
     type_support_ = static_cast<decltype(type_support_)>(typesupport);
 
     auto convert_from_py = py::cast<py::capsule>(
         py_get_typesupport(message_type, "_CONVERT_FROM_PY"));
-    // TODO(sloretz) use get_pointer() in py 2.6+
+    // TODO(sloretz) use get_pointer() in pybind11 2.6+
     convert_from_py_ = reinterpret_cast<decltype(convert_from_py_)>(
         static_cast<void*>(convert_from_py));
 
     auto convert_to_py = py::cast<py::capsule>(
         py_get_typesupport(message_type, "_CONVERT_TO_PY"));
-    // TODO(sloretz) use get_pointer() in py 2.6+
+    // TODO(sloretz) use get_pointer() in pybind11 2.6+
     convert_to_py_ = reinterpret_cast<decltype(convert_to_py_)>(
         static_cast<void*>(convert_to_py));
 
     auto create_ros_message = py::cast<py::capsule>(
         py_get_typesupport(message_type, "_CREATE_ROS_MESSAGE"));
-    // TODO(sloretz) use get_pointer() in py 2.6+
+    // TODO(sloretz) use get_pointer() in pybind11 2.6+
     create_ros_message_ = reinterpret_cast<decltype(create_ros_message_)>(
         static_cast<void*>(create_ros_message));
 
     auto destroy_ros_message = py::cast<py::capsule>(
         py_get_typesupport(message_type, "_DESTROY_ROS_MESSAGE"));
-    // TODO(sloretz) use get_pointer() in py 2.6+
+    // TODO(sloretz) use get_pointer() in pybind11 2.6+
     destroy_ros_message_ = reinterpret_cast<decltype(destroy_ros_message_)>(
         static_cast<void*>(destroy_ros_message));
   }
