@@ -39,11 +39,11 @@ def test_nominal_case():
         reliability=ReliabilityPolicy.RELIABLE,
         durability=DurabilityPolicy.TRANSIENT_LOCAL)
 
-    sys_pub = builder.AddSystem(
-        RosPublisherSystem(BasicTypes, 'out_py', qos, sys_ros_interface.get_ros_interface()))
+    sys_pub = builder.AddSystem(RosPublisherSystem(
+        BasicTypes, 'out_py', qos, sys_ros_interface.get_ros_interface()))
 
-    sys_sub = builder.AddSystem(
-        RosSubscriberSystem(BasicTypes, 'in_py', qos, sys_ros_interface.get_ros_interface()))
+    sys_sub = builder.AddSystem(RosSubscriberSystem(
+        BasicTypes, 'in_py', qos, sys_ros_interface.get_ros_interface()))
 
     builder.Connect(sys_sub.get_output_port(0), sys_pub.get_input_port(0))
     diagram = builder.Build()

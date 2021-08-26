@@ -90,10 +90,13 @@ if(BUILD_TESTING)
   find_package(ament_cmake_cpplint REQUIRED)
   find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_cmake_pytest REQUIRED)
+  find_package(ament_cmake_pycodestyle REQUIRED)
   find_package(test_msgs REQUIRED)
 
   ament_clang_format(CONFIG_FILE .clang-format)
   ament_cpplint()
+
+  ament_pycodestyle(--config pycodestyle.ini)
 
   ament_add_gtest(test_pub_sub test/test_pub_sub.cpp)
 
