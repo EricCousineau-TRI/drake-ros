@@ -30,3 +30,11 @@ _TEST_KWARGS = [
 def remove_test_specific_kwargs(kwargs):
     """Filter keyword arguments specific to test rules from `kwargs`."""
     return {key: value for key, value in kwargs.items() if key not in _TEST_KWARGS}
+
+def add_tags_if_not_present(kwargs, tags_to_add):
+    tags = kwargs.get("tags", [])
+    for tag in tags_to_add:
+        if tag not in tags:
+            tags += [tag]
+    kwargs["tags"] = tags
+    return kwargs

@@ -6,6 +6,7 @@ load(
 )
 load(
     "//tools:kwargs.bzl",
+    "add_tags_if_not_present",
     "filter_to_only_common_kwargs",
     "remove_test_specific_kwargs"
 )
@@ -96,6 +97,9 @@ def ros_py_binary(
                 rmw_implementation = rmw_implementation
             )
 
+    # Ensure we do not accidentally pollute accessible `.runfiles` (#105).
+    binary_kwargs = add_tags_if_not_present(binary_kwargs, ["manual"])
+
     py_binary_rule(
         name = binary_name,
         **binary_kwargs
@@ -153,6 +157,9 @@ def ros_py_test(
                 binary_kwargs, binary_env_changes,
                 rmw_implementation = rmw_implementation,
             )
+
+    # Ensure we do not accidentally pollute accessible `.runfiles` (#105).
+    binary_kwargs = add_tags_if_not_present(binary_kwargs, ["manual"])
 
     py_binary_rule(
         name = binary_name,
