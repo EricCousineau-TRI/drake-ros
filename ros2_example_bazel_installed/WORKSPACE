@@ -51,7 +51,6 @@ ros2_archive(
     # TODO(hidmic,cottsay): Make release-pinned snapshots of this repository once `drake-ros`
     # itself has versions.
     url = "http://repo.ros2.org/ci_archives/drake-ros-underlay/ros2-humble-linux-focal-amd64-ci.tar.bz2",
-    sha256 = "b7a8982cdc07a090b9719e35ae4735df82f9f648d5b703b93bc9db51e448f81d",
     sha256_url = "https://repo.ros2.org/ci_archives/drake-ros-underlay/ros2-humble-linux-focal-amd64-ci-CHECKSUM",
     strip_prefix = "ros2-linux",
 )

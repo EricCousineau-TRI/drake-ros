@@ -54,21 +54,25 @@ def frame_markers(radius=0.01, L=0.1, *, base_pose=RigidTransform(), header=None
     tpl.scale.y = radius
     tpl.scale.z = L
     tpl.color.a = 1.0
+    tpl.ns = 'my_pose'
 
     msg_x = copy.deepcopy(tpl)
     msg_x.color.r = 1.0
     X_MAx = base_pose @ xyz_rpy_deg([L/2., 0., 0.], [0., -90., 0.])
     msg_x.pose = to_ros_pose(X_MAx)
+    msg_x.id = 0
 
     msg_y = copy.deepcopy(tpl)
     msg_y.color.g = 1.0
     X_MAy = base_pose @ xyz_rpy_deg([0., L/2., 0.], [90., 0., 0.])
     msg_y.pose = to_ros_pose(X_MAy)
+    msg_y.id = 1
 
     msg_z = copy.deepcopy(tpl)
     msg_z.color.b = 1.0
     X_MAz = base_pose @ xyz_rpy_deg([0., 0., L/2.], [0., 0., 0.])
     msg_z.pose = to_ros_pose(X_MAz)
+    msg_z.id = 2
     return [msg_x, msg_y, msg_z]
 
 
