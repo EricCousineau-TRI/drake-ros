@@ -28,12 +28,12 @@ geometry_msgs::msg::Point Vector3dToRosPoint(const Eigen::Vector3d& point) {
   return result;
 }
 
-Eigen::Quaternion<double> RosQuatToQuat(
+Eigen::Quaternion<double> RosQuaternionToQuatnerion(
     const geometry_msgs::msg::Quaternion& quat) {
   return Eigen::Quaternion<double>(quat.w, quat.x, quat.y, quat.z);
 }
 
-geometry_msgs::msg::Quaternion QuatToRosQuat(
+geometry_msgs::msg::Quaternion QuaternionToRosQuaternion(
     const Eigen::Quaternion<double>& quat) {
   geometry_msgs::msg::Quaternion result;
   result.x = quat.x();
@@ -48,7 +48,7 @@ Eigen::Isometry3d RosPoseToIsometry3d(const geometry_msgs::msg::Pose& pose) {
   Eigen::Isometry3d result;
   result.translate(
       Eigen::Vector3d(pose.position.x, pose.position.y, pose.position.z));
-  Eigen::Quaterniond quat(pose.orientation.w, pose.orientation.x,
+  const Eigen::Quaterniond quat(pose.orientation.w, pose.orientation.x,
                           pose.orientation.y, pose.orientation.z);
   result.rotate(quat);
   return result;
@@ -57,24 +57,17 @@ Eigen::Isometry3d RosPoseToIsometry3d(const geometry_msgs::msg::Pose& pose) {
 geometry_msgs::msg::Pose Isometry3dToRosPose(
     const Eigen::Isometry3d& isometry) {
   geometry_msgs::msg::Pose result;
-  result.position.x = isometry.translation()[0];
-  result.position.y = isometry.translation()[1];
-  result.position.z = isometry.translation()[2];
-  Eigen::Quaterniond orientation(isometry.rotation());
-  result.orientation.x = orientation.x();
-  result.orientation.y = orientation.y();
-  result.orientation.z = orientation.z();
-  result.orientation.w = orientation.w();
+  result.position = Vector3dToRosPoint(isometry.translation());
+  const Eigen::Quaterniond quat(isometry.rotation());
+  result.orientation = QuaternionToRosQuatnerion(quat);
   return result;
 }
 
 drake::math::RigidTransformd RosPoseToRigidTransform(
     const geometry_msgs::msg::Pose& pose) {
-  Eigen::Quaterniond orientation(pose.orientation.w, pose.orientation.x,
-                                 pose.orientation.y, pose.orientation.z);
-  Eigen::Vector3d translation(pose.position.x, pose.position.y,
-                              pose.position.z);
-  return drake::math::RigidTransformd(orientation, translation);
+  const Eigen::Quaterniond quat = RosQuaternionToQuatnerion(pose.orientation);
+  const Eigen::Vector3d translation = RosPointToVector3d(pose.translation);
+  return drake::math::RigidTransformd(quat, translation);
 }
 
 geometry_msgs::msg::Pose RigidTransformToRosPose(
@@ -162,14 +155,14 @@ geometry_msgs::msg::Twist Vector6dToRosTwist(const drake::Vector6d& vector) {
   return result;
 }
 
-drake::multibody::SpatialVelocity<double> RosTwistToVelocity(
+drake::multibody::SpatialVelocity<double> RosTwistToSpatialVelocity(
     const geometry_msgs::msg::Twist& twist) {
   return drake::multibody::SpatialVelocity<double>(
       Eigen::Vector3d(twist.angular.x, twist.angular.y, twist.angular.z),
       Eigen::Vector3d(twist.linear.x, twist.linear.y, twist.linear.z));
 }
 
-geometry_msgs::msg::Twist VelocityToRosTwist(
+geometry_msgs::msg::Twist SpatialVelocityToRosTwist(
     const drake::multibody::SpatialVelocity<double>& velocity) {
   geometry_msgs::msg::Twist result;
   result.linear.x = velocity.translational()[0];
@@ -181,7 +174,7 @@ geometry_msgs::msg::Twist VelocityToRosTwist(
   return result;
 }
 
-drake::Vector6d RosAccelToVector6d(const geometry_msgs::msg::Accel& accel) {
+drake::Vector6d RosAccelerationToVector6d(const geometry_msgs::msg::Accel& accel) {
   drake::Vector6d result;
   result[0] = accel.linear.x;
   result[1] = accel.linear.y;
@@ -192,7 +185,7 @@ drake::Vector6d RosAccelToVector6d(const geometry_msgs::msg::Accel& accel) {
   return result;
 }
 
-geometry_msgs::msg::Accel Vector6dToRosAccel(const drake::Vector6d& vector) {
+geometry_msgs::msg::Accel Vector6dToRosAcceleration(const drake::Vector6d& vector) {
   geometry_msgs::msg::Accel result;
   result.linear.x = vector[0];
   result.linear.y = vector[1];
@@ -203,14 +196,14 @@ geometry_msgs::msg::Accel Vector6dToRosAccel(const drake::Vector6d& vector) {
   return result;
 }
 
-drake::multibody::SpatialAcceleration<double> RosAccelToAccel(
+drake::multibody::SpatialAcceleration<double> RosAccelerationToSpatialAcceleration(
     const geometry_msgs::msg::Accel& accel) {
   return drake::multibody::SpatialAcceleration<double>(
       Eigen::Vector3d(accel.angular.x, accel.angular.y, accel.angular.z),
       Eigen::Vector3d(accel.linear.x, accel.linear.y, accel.linear.z));
 }
 
-geometry_msgs::msg::Accel AccelToRosAccel(
+geometry_msgs::msg::Accel SpatialAccelerationToRosAcceleration(
     const drake::multibody::SpatialAcceleration<double>& accel) {
   geometry_msgs::msg::Accel result;
   result.linear.x = accel.translational()[0];
@@ -244,14 +237,14 @@ geometry_msgs::msg::Wrench Vector6dToRosWrench(const drake::Vector6d& vector) {
   return result;
 }
 
-drake::multibody::SpatialForce<double> RosWrenchToForce(
+drake::multibody::SpatialForce<double> RosWrenchToSpatialForce(
     const geometry_msgs::msg::Wrench& wrench) {
   return drake::multibody::SpatialForce<double>(
       Eigen::Vector3d(wrench.torque.x, wrench.torque.y, wrench.torque.z),
       Eigen::Vector3d(wrench.force.x, wrench.force.y, wrench.force.z));
 }
 
-geometry_msgs::msg::Wrench ForceToRosWrench(
+geometry_msgs::msg::Wrench SpatialForceToRosWrench(
     const drake::multibody::SpatialForce<double>& force) {
   geometry_msgs::msg::Wrench result;
   result.force.x = force.translational()[0];

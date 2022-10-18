@@ -32,10 +32,10 @@ Eigen::Vector3d RosPointToVector3d(const geometry_msgs::msg::Point& point);
 
 geometry_msgs::msg::Point Vector3dToRosPoint(const Eigen::Vector3d& point);
 
-Eigen::Quaternion<double> RosQuatToQuat(
+Eigen::Quaternion<double> RosQuaternionToQuatnerion(
     const geometry_msgs::msg::Quaternion& quat);
 
-geometry_msgs::msg::Quaternion QuatToRosQuat(
+geometry_msgs::msg::Quaternion QuaternionToRosQuaternion(
     const Eigen::Quaternion<double>& quat);
 
 Eigen::Isometry3d RosPoseToIsometry3d(const geometry_msgs::msg::Pose& pose);
@@ -64,30 +64,32 @@ drake::Vector6d RosTwistToVector6d(const geometry_msgs::msg::Twist& twist);
 
 geometry_msgs::msg::Twist Vector6dToRosTwist(const drake::Vector6d& vector);
 
-drake::multibody::SpatialVelocity<double> RosTwistToVelocity(
+drake::multibody::SpatialVelocity<double> RosTwistToSpatialVelocity(
     const geometry_msgs::msg::Twist& twist);
 
-geometry_msgs::msg::Twist VelocityToRosTwist(
+geometry_msgs::msg::Twist SpatialVelocityToRosTwist(
     const drake::multibody::SpatialVelocity<double>& velocity);
 
-drake::Vector6d RosAccelToVector6d(const geometry_msgs::msg::Accel& accel);
-
-geometry_msgs::msg::Accel Vector6dToRosAccel(const drake::Vector6d& vector);
-
-drake::multibody::SpatialAcceleration<double> RosAccelToAccel(
+drake::Vector6d RosAccelerationToVector6d(
     const geometry_msgs::msg::Accel& accel);
 
-geometry_msgs::msg::Accel AccelToRosAccel(
+geometry_msgs::msg::Accel Vector6dToRosAcceleration(
+    const drake::Vector6d& vector);
+
+drake::multibody::SpatialAcceleration<double> RosAccelerationToSpatialAcceleration(
+    const geometry_msgs::msg::Accel& accel);
+
+geometry_msgs::msg::Accel SpatialAccelerationToRosAcceleration(
     const drake::multibody::SpatialAcceleration<double>& accel);
 
 drake::Vector6d RosWrenchToVector6d(const geometry_msgs::msg::Wrench& wrench);
 
 geometry_msgs::msg::Wrench Vector6dToRosWrench(const drake::Vector6d& vector);
 
-drake::multibody::SpatialForce<double> RosWrenchToForce(
+drake::multibody::SpatialForce<double> RosWrenchToSpatialForce(
     const geometry_msgs::msg::Wrench& wrench);
 
-geometry_msgs::msg::Wrench ForceToRosWrench(
+geometry_msgs::msg::Wrench SpatialForceToRosWrench(
     const drake::multibody::SpatialForce<double>& force);
 
 }  // namespace drake_ros_core
