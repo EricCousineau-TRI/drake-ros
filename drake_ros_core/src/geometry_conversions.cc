@@ -170,53 +170,38 @@ drake::multibody::SpatialAcceleration<double> RosAccelerationToSpatialAccelerati
 geometry_msgs::msg::Accel SpatialAccelerationToRosAcceleration(
     const drake::multibody::SpatialAcceleration<double>& accel) {
   geometry_msgs::msg::Accel result;
-  result.linear.x = accel.translational()[0];
-  result.linear.y = accel.translational()[1];
-  result.linear.z = accel.translational()[2];
-  result.angular.x = accel.rotational()[0];
-  result.angular.y = accel.rotational()[1];
-  result.angular.z = accel.rotational()[2];
+  result.angular = Vector3dToRosVector3(accel.rotational());
+  result.linear = Vector3dToRosVector3(accel.translation());
   return result;
 }
 
 drake::Vector6d RosWrenchToVector6d(const geometry_msgs::msg::Wrench& wrench) {
   drake::Vector6d result;
-  result[0] = wrench.force.x;
-  result[1] = wrench.force.y;
-  result[2] = wrench.force.z;
-  result[3] = wrench.torque.x;
-  result[4] = wrench.torque.y;
-  result[5] = wrench.torque.z;
+  result <<
+      RosVector3ToVector3d(wrench.torque),
+      RosVector3ToVector3d(wrench.force);
   return result;
 }
 
 geometry_msgs::msg::Wrench Vector6dToRosWrench(const drake::Vector6d& vector) {
   geometry_msgs::msg::Wrench result;
-  result.force.x = vector[0];
-  result.force.y = vector[1];
-  result.force.z = vector[2];
-  result.torque.x = vector[3];
-  result.torque.y = vector[4];
-  result.torque.z = vector[5];
+  result.torque = Vector3dToRosVector3(vector.head<3>());
+  result.force = Vector3dToRosVector3(vector.tail<3>());
   return result;
 }
 
 drake::multibody::SpatialForce<double> RosWrenchToSpatialForce(
     const geometry_msgs::msg::Wrench& wrench) {
   return drake::multibody::SpatialForce<double>(
-      Eigen::Vector3d(wrench.torque.x, wrench.torque.y, wrench.torque.z),
-      Eigen::Vector3d(wrench.force.x, wrench.force.y, wrench.force.z));
+      RosVector3ToVector3d(wrench.torque),
+      RosVector3ToVector3d(wrench.force));
 }
 
 geometry_msgs::msg::Wrench SpatialForceToRosWrench(
     const drake::multibody::SpatialForce<double>& force) {
   geometry_msgs::msg::Wrench result;
-  result.force.x = force.translational()[0];
-  result.force.y = force.translational()[1];
-  result.force.z = force.translational()[2];
-  result.torque.x = force.rotational()[0];
-  result.torque.y = force.rotational()[1];
-  result.torque.z = force.rotational()[2];
+  result.torque = Vector3dToRosVector3(force.rotational());
+  result.force = Vector3dToRosVector3(force.translation());
   return result;
 }
 

@@ -19,14 +19,28 @@
 namespace drake_ros_core {
 namespace {
 
-TEST(GeometryConversions, point) {
+geometry_msgs::msg::Point MakeDummyRosPoint() {
   geometry_msgs::msg::Point point;
   point.x = 1.0f;
   point.y = 2.0f;
   point.z = 3.0f;
+  return point;
+}
 
-  EXPECT_EQ(point, drake_ros_core::Vector3dToRosPoint(
-                       drake_ros_core::RosPointToVector3d(point)));
+geomtery_msgs::msg::Quaternion MakeDummyRosQuaternion() {
+  geometry_msgs::msg::Quaternion quat;
+  quat.x = 0.1f;
+  quat.y = 0.2f;
+  quat.z = 0.3f;
+  quat.w = 0.4f;
+  return quat;
+}
+
+TEST(GeometryConversions, point) {
+  
+
+  EXPECT_EQ(point, Vector3dToRosPoint(
+                       RosPointToVector3d(point)));
 }
 
 TEST(GeometryConversions, Quaternion) {
@@ -37,7 +51,7 @@ TEST(GeometryConversions, Quaternion) {
   quat.w = 0.4f;
 
   EXPECT_EQ(quat,
-            drake_ros_core::QuatToRosQuat(drake_ros_core::RosQuatToQuat(quat)));
+            QuatToRosQuat(RosQuatToQuat(quat)));
 }
 
 TEST(GeometryConversions, Pose) {
@@ -45,15 +59,12 @@ TEST(GeometryConversions, Pose) {
   pose.position.x = 1.0f;
   pose.position.y = 2.0f;
   pose.position.z = 3.0f;
-  pose.orientation.x = 0.1f;
-  pose.orientation.y = 0.2f;
-  pose.orientation.z = 0.3f;
-  pose.orientation.w = 0.4f;
+  
 
-  EXPECT_EQ(pose, drake_ros_core::Isometry3dToRosPose(
-                      drake_ros_core::RosPoseToIsometry3d(pose)));
-  EXPECT_EQ(pose, drake_ros_core::RigidTransformToRosPose(
-                      drake_ros_core::RosPoseToRigidTransform(pose)));
+  EXPECT_EQ(pose, Isometry3dToRosPose(
+                      RosPoseToIsometry3d(pose)));
+  EXPECT_EQ(pose, RigidTransformToRosPose(
+                      RosPoseToRigidTransform(pose)));
 }
 
 TEST(GeometryConversions, Transform) {
@@ -67,11 +78,11 @@ TEST(GeometryConversions, Transform) {
   transform.rotation.w = 0.4f;
 
   EXPECT_EQ(transform,
-            drake_ros_core::Isometry3dToRosTransform(
-                drake_ros_core::RosTransformToIsometry3d(transform)));
+            Isometry3dToRosTransform(
+                RosTransformToIsometry3d(transform)));
   EXPECT_EQ(transform,
-            drake_ros_core::RigidTransformToRosTransform(
-                drake_ros_core::RosTransformToRigidTransform(transform)));
+            RigidTransformToRosTransform(
+                RosTransformToRigidTransform(transform)));
 }
 
 TEST(GeometryConversions, Twist) {
@@ -83,10 +94,10 @@ TEST(GeometryConversions, Twist) {
   twist.angular.y = 5.0f;
   twist.angular.z = 6.0f;
 
-  EXPECT_EQ(twist, drake_ros_core::Vector6dToRosTwist(
-                       drake_ros_core::RosTwistToVector6d(twist)));
-  EXPECT_EQ(twist, drake_ros_core::VelocityToRosTwist(
-                       drake_ros_core::RosTwistToVelocity(twist)));
+  EXPECT_EQ(twist, Vector6dToRosTwist(
+                       RosTwistToVector6d(twist)));
+  EXPECT_EQ(twist, VelocityToRosTwist(
+                       RosTwistToVelocity(twist)));
 }
 
 TEST(GeometryConversions, Acceleration) {
@@ -98,10 +109,10 @@ TEST(GeometryConversions, Acceleration) {
   accel.angular.y = 5.0f;
   accel.angular.z = 6.0f;
 
-  EXPECT_EQ(accel, drake_ros_core::Vector6dToRosAccel(
-                       drake_ros_core::RosAccelToVector6d(accel)));
-  EXPECT_EQ(accel, drake_ros_core::AccelToRosAccel(
-                       drake_ros_core::RosAccelToAccel(accel)));
+  EXPECT_EQ(accel, Vector6dToRosAccel(
+                       RosAccelToVector6d(accel)));
+  EXPECT_EQ(accel, AccelToRosAccel(
+                       RosAccelToAccel(accel)));
 }
 
 TEST(GeometryConversions, Wrench) {
@@ -113,10 +124,10 @@ TEST(GeometryConversions, Wrench) {
   wrench.torque.y = 5.0f;
   wrench.torque.z = 6.0f;
 
-  EXPECT_EQ(wrench, drake_ros_core::Vector6dToRosWrench(
-                        drake_ros_core::RosWrenchToVector6d(wrench)));
-  EXPECT_EQ(wrench, drake_ros_core::ForceToRosWrench(
-                        drake_ros_core::RosWrenchToForce(wrench)));
+  EXPECT_EQ(wrench, Vector6dToRosWrench(
+                        RosWrenchToVector6d(wrench)));
+  EXPECT_EQ(wrench, ForceToRosWrench(
+                        RosWrenchToForce(wrench)));
 }
 
 }  // namespace

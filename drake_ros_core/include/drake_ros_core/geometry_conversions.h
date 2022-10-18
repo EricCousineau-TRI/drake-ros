@@ -12,6 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+@file
+
+Conversions for ROS's geometry_msgs types for Drake and Eigen types that Drake
+uses.
+
+### Spatial Vectors
+
+All 6d spatial vectors are ordered by [rotational; translational], per
+ttps://drake.mit.edu/doxygen_cxx/group__multibody__spatial__vectors.html
+
+### Isometry3 Elements
+
+All Isometry3<> conversion methods actually use RigidTransform as an
+intermediate. This means that we are restricted to SE(3), or more specifically,
+rotations are constrained to be in SO(3), not just O(3), so it is not to
+express mirroring in Isometry3<> results (even though the type is capable of
+expressing it).
+*/
+
 #pragma once
 
 #include <Eigen/Geometry>
@@ -59,10 +79,6 @@ drake::math::RigidTransformd RosTransformToRigidTransform(
 
 geometry_msgs::msg::Transform RigidTransformToRosTransform(
     const drake::math::RigidTransformd& transform);
-
-// N.B. All Isometry3<> conversion methods actually use RigidTransform as an
-// intermediate. This means that we are restricted to SE(3), so no mirroring.
-// (i.e., rotations are restricted to SO(3), not just O(3)).
 
 Eigen::Isometry3d RosPoseToIsometry3d(const geometry_msgs::msg::Pose& pose);
 
