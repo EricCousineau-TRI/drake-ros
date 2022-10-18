@@ -135,8 +135,8 @@ TEST(GeometryConversions, Pose) {
   EXPECT_EQ(message, RigidTransformToRosPose(value));
 
   // Test Isometry3 flavoring.
-  EXPECT_EQ(message, Isometry3ToRosPose(value.ToIsometry3()));
-  EXPECT_EQ(value.ToIsometry3(), RosPoseToIsometry3(message));
+  EXPECT_EQ(message, Isometry3ToRosPose(value.GetAsIsometry3()));
+  EXPECT_EQ(value.GetAsIsometry3(), RosPoseToIsometry3(message));
 }
 
 geometry_msgs::msg::Transform MakeDummyRosTransform() {
@@ -157,8 +157,8 @@ TEST(GeometryConversions, Transform) {
   EXPECT_EQ(message, RigidTransformToRosTransform(value));
 
   // Test Isometry3 flavoring.
-  EXPECT_EQ(message, Isometry3ToRosTransform(value.ToIsometry3()));
-  EXPECT_EQ(value.ToIsometry3(), RosTransformToIsometry3(message));
+  EXPECT_EQ(message, Isometry3ToRosTransform(value.GetAsIsometry3()));
+  EXPECT_EQ(value.GetAsIsometry3(), RosTransformToIsometry3(message));
 }
 
 // General Spatial Vectors.
