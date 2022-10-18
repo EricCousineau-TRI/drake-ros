@@ -48,6 +48,8 @@ expressing it).
 
 namespace drake_ros_core {
 
+// Vector / Translation.
+
 Eigen::Vector3d RosPointToVector3d(const geometry_msgs::msg::Point& point);
 
 geometry_msgs::msg::Point Vector3dToRosPoint(const Eigen::Vector3d& point);
@@ -55,6 +57,8 @@ geometry_msgs::msg::Point Vector3dToRosPoint(const Eigen::Vector3d& point);
 Eigen::Vector3d RosVector3ToVector3d(const geometry_msgs::msg::Vector3& point);
 
 geometry_msgs::msg::Vector3 Vector3dToRosVector3(const Eigen::Vector3d& point);
+
+// Orientation.
 
 Eigen::Quaternion<double> RosQuaternionToQuaternion(
     const geometry_msgs::msg::Quaternion& quat);
@@ -67,6 +71,8 @@ drake::math::RotationMatrixd RosQuaternionToRotationMatrix(
 
 geometry_msgs::msg::Quaternion RotationMatrixToRosQuaternion(
     const drake::math::RotationMatrixd& rotation);
+
+// Pose.
 
 drake::math::RigidTransformd RosPoseToRigidTransform(
     const geometry_msgs::msg::Pose& pose);
@@ -90,6 +96,8 @@ Eigen::Isometry3d RosTransformToIsometry3d(
 geometry_msgs::msg::Transform Isometry3dToRosTransform(
     const Eigen::Isometry3d& isometry);
 
+// Spatial Velocity.
+
 drake::Vector6d RosTwistToVector6d(const geometry_msgs::msg::Twist& twist);
 
 geometry_msgs::msg::Twist Vector6dToRosTwist(const drake::Vector6d& vector);
@@ -99,6 +107,8 @@ drake::multibody::SpatialVelocity<double> RosTwistToSpatialVelocity(
 
 geometry_msgs::msg::Twist SpatialVelocityToRosTwist(
     const drake::multibody::SpatialVelocity<double>& velocity);
+
+// Spatial Acceleration.
 
 drake::Vector6d RosAccelerationToVector6d(
     const geometry_msgs::msg::Accel& accel);
@@ -111,6 +121,8 @@ drake::multibody::SpatialAcceleration<double> RosAccelerationToSpatialAccelerati
 
 geometry_msgs::msg::Accel SpatialAccelerationToRosAcceleration(
     const drake::multibody::SpatialAcceleration<double>& accel);
+
+// Spatial Force.
 
 drake::Vector6d RosWrenchToVector6d(const geometry_msgs::msg::Wrench& wrench);
 
