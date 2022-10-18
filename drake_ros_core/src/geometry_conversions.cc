@@ -28,6 +28,18 @@ geometry_msgs::msg::Point Vector3dToRosPoint(const Eigen::Vector3d& point) {
   return result;
 }
 
+Eigen::Vector3d RosVector3ToVector3d(const geometry_msgs::msg::Vector3& point) {
+  return Eigen::Vector3d(point.x, point.y, point.z);
+}
+
+geometry_msgs::msg::Vector3 Vector3dToRosVector3(const Eigen::Vector3d& point) {
+  geometry_msgs::msg::Vector3 result;
+  result.x = point[0];
+  result.y = point[1];
+  result.z = point[2];
+  return result;
+}
+
 Eigen::Quaternion<double> RosQuaternionToQuaternion(
     const geometry_msgs::msg::Quaternion& quat) {
   return Eigen::Quaternion<double>(quat.w, quat.x, quat.y, quat.z);
@@ -104,72 +116,55 @@ geometry_msgs::msg::Transform Isometry3dToRosTransform(
 
 drake::Vector6d RosTwistToVector6d(const geometry_msgs::msg::Twist& twist) {
   drake::Vector6d result;
-  result[0] = twist.linear.x;
-  result[1] = twist.linear.y;
-  result[2] = twist.linear.z;
-  result[3] = twist.angular.x;
-  result[4] = twist.angular.y;
-  result[5] = twist.angular.z;
-  return result;
+  result <<
+      RosVector3ToVector3d(twist.angular),
+      RosVector3ToVector3d(twist.linear);
+  return result.
 }
 
 geometry_msgs::msg::Twist Vector6dToRosTwist(const drake::Vector6d& vector) {
   geometry_msgs::msg::Twist result;
-  result.linear.x = vector[0];
-  result.linear.y = vector[1];
-  result.linear.z = vector[2];
-  result.angular.x = vector[3];
-  result.angular.y = vector[4];
-  result.angular.z = vector[5];
+  result.angular = Vector3dToRosVector3(vector.head<3>());
+  result.linear = Vector3dToRosVector3(vector.tail<3>());
   return result;
 }
 
 drake::multibody::SpatialVelocity<double> RosTwistToSpatialVelocity(
     const geometry_msgs::msg::Twist& twist) {
   return drake::multibody::SpatialVelocity<double>(
-      Eigen::Vector3d(twist.angular.x, twist.angular.y, twist.angular.z),
-      Eigen::Vector3d(twist.linear.x, twist.linear.y, twist.linear.z));
+      RosVector3ToVector3d(twist.angular), RosVector3ToVector3d(twist.linear));
 }
 
 geometry_msgs::msg::Twist SpatialVelocityToRosTwist(
     const drake::multibody::SpatialVelocity<double>& velocity) {
   geometry_msgs::msg::Twist result;
-  result.linear.x = velocity.translational()[0];
-  result.linear.y = velocity.translational()[1];
-  result.linear.z = velocity.translational()[2];
-  result.angular.x = velocity.rotational()[0];
-  result.angular.y = velocity.rotational()[1];
-  result.angular.z = velocity.rotational()[2];
+  result.linear = Vector3dToRosVector3(velocity.translational());
+  result.angular = Vector3dToRosVector3(velocity.rotational());
   return result;
 }
 
-drake::Vector6d RosAccelerationToVector6d(const geometry_msgs::msg::Accel& accel) {
+drake::Vector6d RosAccelerationToVector6d(
+    const geometry_msgs::msg::Accel& accel) {
   drake::Vector6d result;
-  result[0] = accel.linear.x;
-  result[1] = accel.linear.y;
-  result[2] = accel.linear.z;
-  result[3] = accel.angular.x;
-  result[4] = accel.angular.y;
-  result[5] = accel.angular.z;
+  result <<
+      RosVector3ToVector3d(accel.angular),
+      RosVector3ToVector3d(accel.linear);
   return result;
 }
 
-geometry_msgs::msg::Accel Vector6dToRosAcceleration(const drake::Vector6d& vector) {
+geometry_msgs::msg::Accel Vector6dToRosAcceleration(
+    const drake::Vector6d& vector) {
   geometry_msgs::msg::Accel result;
-  result.linear.x = vector[0];
-  result.linear.y = vector[1];
-  result.linear.z = vector[2];
-  result.angular.x = vector[3];
-  result.angular.y = vector[4];
-  result.angular.z = vector[5];
+  result.angular = Vector3dToRosVector3(vector.head<3>());
+  result.linear = Vector3dToRosVector3(vector.tail<3>());
   return result;
 }
 
 drake::multibody::SpatialAcceleration<double> RosAccelerationToSpatialAcceleration(
     const geometry_msgs::msg::Accel& accel) {
   return drake::multibody::SpatialAcceleration<double>(
-      Eigen::Vector3d(accel.angular.x, accel.angular.y, accel.angular.z),
-      Eigen::Vector3d(accel.linear.x, accel.linear.y, accel.linear.z));
+      RosVector3ToVector3d(accel.angular),
+      RosVector3ToVector3d(accel.linear));
 }
 
 geometry_msgs::msg::Accel SpatialAccelerationToRosAcceleration(

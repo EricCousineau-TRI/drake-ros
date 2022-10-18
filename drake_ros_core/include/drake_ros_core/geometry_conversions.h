@@ -32,6 +32,10 @@ Eigen::Vector3d RosPointToVector3d(const geometry_msgs::msg::Point& point);
 
 geometry_msgs::msg::Point Vector3dToRosPoint(const Eigen::Vector3d& point);
 
+Eigen::Vector3d RosVector3ToVector3d(const geometry_msgs::msg::Vector3& point);
+
+geometry_msgs::msg::Vector3 Vector3dToRosVector3(const Eigen::Vector3d& point);
+
 Eigen::Quaternion<double> RosQuaternionToQuaternion(
     const geometry_msgs::msg::Quaternion& quat);
 
