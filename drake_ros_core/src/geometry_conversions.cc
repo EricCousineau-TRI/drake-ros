@@ -28,7 +28,7 @@ geometry_msgs::msg::Point Vector3dToRosPoint(const Eigen::Vector3d& point) {
   return result;
 }
 
-Eigen::Quaternion<double> RosQuaternionToQuatnerion(
+Eigen::Quaternion<double> RosQuaternionToQuaternion(
     const geometry_msgs::msg::Quaternion& quat) {
   return Eigen::Quaternion<double>(quat.w, quat.x, quat.y, quat.z);
 }
@@ -40,32 +40,22 @@ geometry_msgs::msg::Quaternion QuaternionToRosQuaternion(
   result.y = quat.y();
   result.z = quat.z();
   result.w = quat.w();
-
   return result;
 }
 
-Eigen::Isometry3d RosPoseToIsometry3d(const geometry_msgs::msg::Pose& pose) {
-  Eigen::Isometry3d result;
-  result.translate(
-      Eigen::Vector3d(pose.position.x, pose.position.y, pose.position.z));
-  const Eigen::Quaterniond quat(pose.orientation.w, pose.orientation.x,
-                          pose.orientation.y, pose.orientation.z);
-  result.rotate(quat);
-  return result;
+drake::math::RotationMatrixd RosQuaternionToRotationMatrix(
+    const geometry_msgs::msg::Quaternion& quat) {
+  return drake::math::RotationMatrixd(RosQuaternionToQuaternion(quat));
 }
 
-geometry_msgs::msg::Pose Isometry3dToRosPose(
-    const Eigen::Isometry3d& isometry) {
-  geometry_msgs::msg::Pose result;
-  result.position = Vector3dToRosPoint(isometry.translation());
-  const Eigen::Quaterniond quat(isometry.rotation());
-  result.orientation = QuaternionToRosQuatnerion(quat);
-  return result;
+geometry_msgs::msg::Quaternion RotationMatrixToRosQuaternion(
+    const drake::math::RotationMatrixd& rotation) {
+  return QuaternionToRosQuaternion(rotation.ToQuaternion());
 }
 
 drake::math::RigidTransformd RosPoseToRigidTransform(
     const geometry_msgs::msg::Pose& pose) {
-  const Eigen::Quaterniond quat = RosQuaternionToQuatnerion(pose.orientation);
+  const Eigen::Quaterniond quat = RosQuaternionToQuaternion(pose.orientation);
   const Eigen::Vector3d translation = RosPointToVector3d(pose.translation);
   return drake::math::RigidTransformd(quat, translation);
 }
@@ -73,64 +63,43 @@ drake::math::RigidTransformd RosPoseToRigidTransform(
 geometry_msgs::msg::Pose RigidTransformToRosPose(
     const drake::math::RigidTransformd& transform) {
   geometry_msgs::msg::Pose result;
-  result.position.x = transform.translation()[0];
-  result.position.y = transform.translation()[1];
-  result.position.z = transform.translation()[2];
-  Eigen::Quaterniond orientation = transform.rotation().ToQuaternion();
-  result.orientation.x = orientation.x();
-  result.orientation.y = orientation.y();
-  result.orientation.z = orientation.z();
-  result.orientation.w = orientation.w();
-  return result;
-}
-
-Eigen::Isometry3d RosTransformToIsometry3d(
-    const geometry_msgs::msg::Transform& transform) {
-  Eigen::Isometry3d result;
-  result.translate(Eigen::Vector3d(transform.translation.x,
-                                   transform.translation.y,
-                                   transform.translation.z));
-  Eigen::Quaterniond quat(transform.rotation.w, transform.rotation.x,
-                          transform.rotation.y, transform.rotation.z);
-  result.rotate(quat);
-  return result;
-}
-
-geometry_msgs::msg::Transform Isometry3dToRosTransform(
-    const Eigen::Isometry3d& isometry) {
-  geometry_msgs::msg::Transform result;
-  result.translation.x = isometry.translation()[0];
-  result.translation.y = isometry.translation()[1];
-  result.translation.z = isometry.translation()[2];
-  Eigen::Quaterniond orientation(isometry.rotation());
-  result.rotation.x = orientation.x();
-  result.rotation.y = orientation.y();
-  result.rotation.z = orientation.z();
-  result.rotation.w = orientation.w();
+  result.position = Vector3dToRosPoint(transform.translation());
+  result.orientation = RotationMatrixToRosQuaternion(transform.rotation());
   return result;
 }
 
 drake::math::RigidTransformd RosTransformToRigidTransform(
     const geometry_msgs::msg::Transform& transform) {
-  Eigen::Quaterniond orientation(transform.rotation.w, transform.rotation.x,
-                                 transform.rotation.y, transform.rotation.z);
-  Eigen::Vector3d translation(transform.translation.x, transform.translation.y,
-                              transform.translation.z);
-  return drake::math::RigidTransformd(orientation, translation);
+  return drake::math::RigidTransformd(
+      RosQuaternionToRotationMatrix(),
+      RosPointToVector3d(translation));
 }
 
 geometry_msgs::msg::Transform RigidTransformToRosTransform(
     const drake::math::RigidTransformd& transform) {
   geometry_msgs::msg::Transform result;
-  result.translation.x = transform.translation()[0];
-  result.translation.y = transform.translation()[1];
-  result.translation.z = transform.translation()[2];
-  Eigen::Quaterniond orientation = transform.rotation().ToQuaternion();
-  result.rotation.x = orientation.x();
-  result.rotation.y = orientation.y();
-  result.rotation.z = orientation.z();
-  result.rotation.w = orientation.w();
+  result.translation = Vector3dToRosPoint(transform.translation());
+  result.rotation = RotationMatrixToRosQuaternion(transform.rotation());
   return result;
+}
+
+Eigen::Isometry3d RosPoseToIsometry3d(const geometry_msgs::msg::Pose& pose) {
+  return RosPoseToRigidTransform(pose).ToIsometry3();
+}
+
+geometry_msgs::msg::Pose Isometry3dToRosPose(
+    const Eigen::Isometry3d& isometry) {
+  return RigidTransformToRosPose(RigidTransformd(isometry));
+}
+
+Eigen::Isometry3d RosTransformToIsometry3d(
+    const geometry_msgs::msg::Transform& transform) {
+  return RosPoseToRigidTransform(transform).ToIsometry3();
+}
+
+geometry_msgs::msg::Transform Isometry3dToRosTransform(
+    const Eigen::Isometry3d& isometry) {
+  return RigidTransformToRosTransform(RigidTransformd(isometry));
 }
 
 drake::Vector6d RosTwistToVector6d(const geometry_msgs::msg::Twist& twist) {

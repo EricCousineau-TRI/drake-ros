@@ -32,15 +32,17 @@ Eigen::Vector3d RosPointToVector3d(const geometry_msgs::msg::Point& point);
 
 geometry_msgs::msg::Point Vector3dToRosPoint(const Eigen::Vector3d& point);
 
-Eigen::Quaternion<double> RosQuaternionToQuatnerion(
+Eigen::Quaternion<double> RosQuaternionToQuaternion(
     const geometry_msgs::msg::Quaternion& quat);
 
 geometry_msgs::msg::Quaternion QuaternionToRosQuaternion(
     const Eigen::Quaternion<double>& quat);
 
-Eigen::Isometry3d RosPoseToIsometry3d(const geometry_msgs::msg::Pose& pose);
+drake::math::RotationMatrixd RosQuaternionToRotationMatrix(
+    const geometry_msgs::msg::Quaternion& quat);
 
-geometry_msgs::msg::Pose Isometry3dToRosPose(const Eigen::Isometry3d& isometry);
+geometry_msgs::msg::Quaternion RotationMatrixToRosQuaternion(
+    const drake::math::RotationMatrixd& rotation);
 
 drake::math::RigidTransformd RosPoseToRigidTransform(
     const geometry_msgs::msg::Pose& pose);
@@ -48,17 +50,25 @@ drake::math::RigidTransformd RosPoseToRigidTransform(
 geometry_msgs::msg::Pose RigidTransformToRosPose(
     const drake::math::RigidTransformd& transform);
 
-Eigen::Isometry3d RosTransformToIsometry3d(
-    const geometry_msgs::msg::Transform& transform);
-
-geometry_msgs::msg::Transform Isometry3dToRosTransform(
-    const Eigen::Isometry3d& isometry);
-
 drake::math::RigidTransformd RosTransformToRigidTransform(
     const geometry_msgs::msg::Transform& transform);
 
 geometry_msgs::msg::Transform RigidTransformToRosTransform(
     const drake::math::RigidTransformd& transform);
+
+// N.B. All Isometry3<> conversion methods actually use RigidTransform as an
+// intermediate. This means that we are restricted to SE(3), so no mirroring.
+// (i.e., rotations are restricted to SO(3), not just O(3)).
+
+Eigen::Isometry3d RosPoseToIsometry3d(const geometry_msgs::msg::Pose& pose);
+
+geometry_msgs::msg::Pose Isometry3dToRosPose(const Eigen::Isometry3d& isometry);
+
+Eigen::Isometry3d RosTransformToIsometry3d(
+    const geometry_msgs::msg::Transform& transform);
+
+geometry_msgs::msg::Transform Isometry3dToRosTransform(
+    const Eigen::Isometry3d& isometry);
 
 drake::Vector6d RosTwistToVector6d(const geometry_msgs::msg::Twist& twist);
 
