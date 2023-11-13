@@ -3,7 +3,7 @@ from multiprocessing.dummy import Pool
 import os
 from pathlib import Path
 import re
-from tempfile import TemporaryDirectory
+from tempfile import TemporaryDirectory, mkdtemp
 
 import cmake_tools
 from ros2bzl.resources import path_to_resource
@@ -135,7 +135,9 @@ def collect_ament_cmake_package_properties(name, metadata):
     # to preclude potential interactions if multiple packages were
     # brought into the same CMake run. The latter could be done for
     # speed
-    with TemporaryDirectory(dir=os.getcwd()) as project_path:
+    # with TemporaryDirectory(dir=os.getcwd()) as project_path:
+    project_path = mkdtemp(dir=os.getcwd())
+    if True:
         project_name = 'empty_using_' + name
         cmakelists_template_path = path_to_resource(
             'templates/ament_cmake_CMakeLists.txt.in')
