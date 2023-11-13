@@ -125,7 +125,9 @@ def get_cmake_codemodel(project_path: Path, build_path: Path) -> CodeModel:
     args = ['cmake', str(project_path)]
     result = subprocess.run(args, cwd=str(build_path))
     if result.returncode != 0:
-        raise RuntimeError("CMake error occurred on project. See build logs")
+        raise RuntimeError(
+            "CMake error occurred on project. See build logs\n"
+            f"project_path: {project_path}")
 
     # There should only be one file, but just in case the latest is the
     # largest file in lexicographic order.
