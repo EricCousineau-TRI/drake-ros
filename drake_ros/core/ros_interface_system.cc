@@ -23,15 +23,16 @@ DrakeRos* RosInterfaceSystem::get_ros_interface() const {
 }
 
 void RosInterfaceSystem::DoCalcNextUpdateTime(
-    const drake::systems::Context<double>&,
-    drake::systems::CompositeEventCollection<double>*, double* time) const {
-  constexpr int kMaxWorkMillis = 0;  // Do not block.
-  impl_->ros->Spin(kMaxWorkMillis);
-  // TODO(sloretz) Lcm system pauses time if some work was done, but ROS 2 API
-  // doesn't say if any work was done. How to reconcile that?
-  // TODO(hidmic): test for subscription latency in context time, how does the
-  // order of node spinning and message taking affects it?
-  *time = std::numeric_limits<double>::infinity();
+    const drake::systems::Context<double>& context,
+    drake::systems::CompositeEventCollection<double>* events, double* time) const {
+  LeafSystem<double>::DoCalcNextUpdateTime(context, events, time);
+  // constexpr int kMaxWorkMillis = 0;  // Do not block.
+  // impl_->ros->Spin(kMaxWorkMillis);
+  // // TODO(sloretz) Lcm system pauses time if some work was done, but ROS 2 API
+  // // doesn't say if any work was done. How to reconcile that?
+  // // TODO(hidmic): test for subscription latency in context time, how does the
+  // // order of node spinning and message taking affects it?
+  // *time = std::numeric_limits<double>::infinity();
 }
 }  // namespace core
 }  // namespace drake_ros
