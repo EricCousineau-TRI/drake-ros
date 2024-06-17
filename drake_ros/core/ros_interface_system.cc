@@ -12,14 +12,14 @@ struct RosInterfaceSystem::Impl {
 };
 
 RosInterfaceSystem::RosInterfaceSystem(std::unique_ptr<DrakeRos> ros)
-    : impl_(new Impl()) {
-  impl_->ros = std::move(ros);
+    : impl_(nullptr) { //new Impl()) {
+  // impl_->ros = std::move(ros);
 }
 
 RosInterfaceSystem::~RosInterfaceSystem() {}
 
 DrakeRos* RosInterfaceSystem::get_ros_interface() const {
-  return impl_->ros.get();
+  return nullptr; // impl_->ros.get();
 }
 
 void RosInterfaceSystem::DoCalcNextUpdateTime(
